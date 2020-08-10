@@ -53,13 +53,10 @@ function SetSearchParam(param, value) {
     old_value = search_params.get(param);
     
     if (old_value != value) {
-        console.log('SET', param, value)
-        
         if (value != null)
             search_params.set(param, value);
         else
             search_params.delete(param)
-    
     
         url.search = search_params.toString();
         window.history.pushState("", document.title, url);
