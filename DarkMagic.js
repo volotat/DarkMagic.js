@@ -1,10 +1,4 @@
-Здесь собран набор трюков и идей которые насобирал за время работы над heavily js dependent project.
-
-
-Темплейты и функции.
-Добавление кода к функции.
-
-A set of methods, that might be extremely useful, but should be used with attention and care.
+//A set of methods, that might be extremely useful, but should be used with attention and care.
 
 
 
