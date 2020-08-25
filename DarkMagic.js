@@ -50,7 +50,7 @@ function SetSearchParam(param, value) {
     var query_string = url.search;
     var search_params = new URLSearchParams(query_string); 
     
-    old_value = search_params.get(param);
+    var old_value = search_params.get(param);
     
     if (old_value != value) {
         if (value != null)
