@@ -86,3 +86,8 @@ function ExpandFunction(func, before = function(){}, after = function(){}) {
         };
     })();
 }
+
+//Получение элемента страницы по id
+function GE(el) {
+  return document.getElementById(el);
+}
