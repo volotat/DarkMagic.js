@@ -105,7 +105,7 @@ Number.prototype.clamp = function(min, max) {
 
 //Картинка с прогрессом загрузки
 var image_cache = {};
-Image.prototype.load = function(url, onload = function(){}, onprogress = function(){}, onerror = function(){}, max_size = null){
+Image.prototype.load = function(url, onload = function(){}, onprogress = function(){}, onerror = function(){}, params = null){
     var thisImg = this;
     if (url in image_cache){
         thisImg.src = window.URL.createObjectURL(image_cache[url]);
@@ -114,15 +114,6 @@ Image.prototype.load = function(url, onload = function(){}, onprogress = functio
         var xmlHTTP = new XMLHttpRequest();
         xmlHTTP.open('GET', url,true);
         xmlHTTP.responseType = 'arraybuffer';
-        
-        //xmlHTTP.setRequestHeader("Content-Type", "application/json");
-        xmlHTTP.setRequestHeader("X-ApiKey", "CADA8974-D3E2-4FE0-8A78-DC20CC798FBC");
-        xmlHTTP.setRequestHeader("X-Authorization", "3AA12351-A89C-4450-8C27-2C1FE8B23384");
-        //xmlHTTP.setRequestHeader("X-ClientType", "Android");
-        //xmlHTTP.setRequestHeader("X-ClientVersion", "1.5.3");
-        //xmlHTTP.setRequestHeader("X-Auth-Token", TOKEN);
-        
-        if (max_size != null) xmlHTTP.setRequestHeader("MAX_SIZE", max_size);
         
         xmlHTTP.onreadystatechange = function (oEvent) {  
             if (xmlHTTP.readyState === 4) {  
