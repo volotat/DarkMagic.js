@@ -117,7 +117,7 @@ Image.prototype.load = function(url, onload = function(){}, onprogress = functio
         xmlHTTP.open('GET', url,true);
         xmlHTTP.responseType = 'arraybuffer';
 	    
-	for (var key in params.headers) xmlHTTP.setRequestHeader(key, params.headers[key]);
+        for (var key in headers) xmlHTTP.setRequestHeader(key, params.headers[key]);
         
         xmlHTTP.onreadystatechange = function (oEvent) {  
             if (xmlHTTP.readyState === 4) {  
