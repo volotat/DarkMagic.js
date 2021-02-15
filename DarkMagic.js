@@ -105,7 +105,9 @@ Number.prototype.clamp = function(min, max) {
 
 //Картинка с прогрессом загрузки
 var image_cache = {};
-Image.prototype.load = function(url, onload = function(){}, onprogress = function(){}, onerror = function(){}, params = null){
+Image.prototype.load = function(url, onload = function(){}, onprogress = function(){}, onerror = function(){}, params = {}){
+    var headers = (typeof params.headers != 'undefined') ? params.headers : {};
+	
     var thisImg = this;
     if (url in image_cache){
         thisImg.src = window.URL.createObjectURL(image_cache[url]);
@@ -114,6 +116,8 @@ Image.prototype.load = function(url, onload = function(){}, onprogress = functio
         var xmlHTTP = new XMLHttpRequest();
         xmlHTTP.open('GET', url,true);
         xmlHTTP.responseType = 'arraybuffer';
+	    
+	for (var key in params.headers) xmlHTTP.setRequestHeader(key, params.headers[key]);
         
         xmlHTTP.onreadystatechange = function (oEvent) {  
             if (xmlHTTP.readyState === 4) {  
