@@ -205,8 +205,26 @@ function uuidv4() {
 // CODING PATTERNS
 //------------------------
 
-//--------- Template's functions pattern -------------
+//--------- JS Template's functions pattern -------------
 //var func_name = 'f_' + makeid(8);
 //window[func_name] = function() {*your function*};
 //template = `<button onclick="${func_name}()">`;
 //GE('*html element id*').innerHTML = template;
+
+//--------- JS app page template -----------
+//<!DOCTYPE html>
+//<html>
+//<head>
+//    <meta charset="utf-8" />
+//    <script src="https://cdn.jsdelivr.net/gh/volotat/DarkMagic.js@master/DarkMagic.js?53"></script>
+//    <style type="text/css" id="dynamic_css"></style>
+//</head>
+//<body id='body'></body>
+//<script type="text/javascript">
+//	document.write('<scr'+'ipt defer type="text/javascript" src="script.js?'+Math.random()+'"></scr'+'ipt>');
+//</script>
+//</html>
+
+//use GE('body').innerHTML to add elements to the page
+//use GE('dynamic_css').innerHTML to add style to the elements
+//use functions pattern from above to make new elements active 
