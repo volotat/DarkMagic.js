@@ -200,6 +200,35 @@ function uuidv4() {
   });
 }
 
+/// HTML CONTAINER ///
+function CreateContainer(id, css_data, html_data){
+  var head = document.head || document.getElementsByTagName('head')[0];
+  var style = document.createElement('style');
+  style.setAttribute("id", id + "_css");
+  head.appendChild(style);
+	
+  style.type = 'text/css';
+  if (style.styleSheet){
+    // This is required for IE8 and below.
+    style.styleSheet.cssText = css_data;
+  } else {
+    style.appendChild(document.createTextNode(css_data));
+  }
+		
+  var container = document.createElement('div');
+  container.setAttribute("id", id + "_html");
+	
+  return container;
+}
+
+function RemoveContainer(id, css_data, html_data){
+  if (GE(id + '_css')) GE(id + '_css').remove();
+  if (GE(id + '_html')) GE(id + '_html').remove();
+}
+
+function CheckContainer(id){
+  return GE(id + '_css') || GE(id + '_html');
+}
 
 //------------------------
 // CODING PATTERNS
