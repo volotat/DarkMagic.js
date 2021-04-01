@@ -217,6 +217,7 @@ function CreateContainer(id, css_data, html_data){
 		
   var container = document.createElement('div');
   container.setAttribute("id", id + "_html");
+  container.innerHTML = html_data;
 	
   return container;
 }
