@@ -222,7 +222,7 @@ function CreateContainer(id, css_data, html_data){
   return container;
 }
 
-function RemoveContainer(id, css_data, html_data){
+function RemoveContainer(id){
   if (GE(id + '_css')) GE(id + '_css').remove();
   if (GE(id + '_html')) GE(id + '_html').remove();
 }
