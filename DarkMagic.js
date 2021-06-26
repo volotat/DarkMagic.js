@@ -1,7 +1,158 @@
 //A set of methods, that might be extremely useful, but should be used with attention and care.
 
 
+///TODO: Add headers
 
+var MAX_REQUEST_ATTEMPT = 10;
+var TIMEOUT = 10000;
+var NETWORK_TRACKING = true;
+var CONNECTIONS = [];
+
+class Network {
+    ///------- Основное API -------///
+    
+    //Прервать все соединения
+    static Abort(){
+        for (var i = 0; i < CONNECTIONS.length; i++) {
+            CONNECTIONS[i].abort();
+        }
+        CONNECTIONS = [];
+        
+        window.stop();
+    }
+    
+    static GetPasswordHash(password){
+        return sha256(password)
+    }
+    
+    static createCORSRequest(method, url) {
+        var xhr = new XMLHttpRequest();
+        if ("withCredentials" in xhr) {
+            xhr.open(method, url, true);
+        } else if (typeof XDomainRequest != "undefined") {
+            xhr = new XDomainRequest();
+            xhr.open(method, url);
+        } else {
+            xhr = null;
+        }
+        return xhr;
+    }
+    
+    static DoRequestAsync(url, params = {}, task, error_count = 0, debug = false){
+        var method = (typeof params.method != 'undefined') ? params.method : "GET";
+        var post_data = (typeof params.post_data != 'undefined') ? params.post_data : "";
+        var form_data = (typeof params.form_data != 'undefined') ? params.form_data : null;
+        var repeat_request = (typeof params.repeat_request != 'undefined') ? params.repeat_request : true;
+        var timeout = (typeof params.timeout != 'undefined') ? params.timeout : TIMEOUT;
+        var show_errors = (typeof params.show_errors != 'undefined') ? params.show_errors : true;
+        var cache_request = (typeof params.cache_request != 'undefined') ? params.cache_request : false;
+        var include_headers = (typeof params.include_headers != 'undefined') ? params.include_headers : true;
+        var on_error = (typeof params.on_error != 'undefined') ? params.on_error : ()=>{};
+		var verbosity = (typeof params.verbosity != 'undefined') ? params.verbosity : true;
+        
+        let xhr = Network.createCORSRequest(method, url);
+        xhr.timeout = timeout;
+        CONNECTIONS.push(xhr);
+        
+        if (cache_request) {
+            if (url in requests_cache){
+                setTimeout(function() {
+                    task(requests_cache[url])
+                }, 10);
+                return null;
+            }        
+        }
+        
+        if (include_headers){
+            //xhr.setRequestHeader(header_name, header_value);
+        }
+        
+        let start = Date.now();
+        xhr.onload = function (e) {
+          var time = (Date.now() - start) / 1000
+          if (NETWORK_TRACKING && verbosity)
+              try {	
+                console.log(url, '\nstatus:', xhr.status, 'time:', time, 'response:', JSON.parse(xhr.responseText))	
+              } catch (e) {
+                console.log(url, '\nstatus:', xhr.status, 'time:', time , 'response:', '"' + xhr.responseText + '"')
+              }			
+          if (xhr.readyState === 4) {
+            if ([200, 201, 202, 203, 204].includes(xhr.status)) {
+                if (cache_request) {
+                    requests_cache[url] = xhr.responseText;
+                }
+                task(xhr.responseText)
+            } else {
+				if (error_count < MAX_REQUEST_ATTEMPT && repeat_request)
+					setTimeout(function() {
+						Network.DoRequestAsync(url, params, task, error_count + 1)
+					}, 1000);
+				else {
+					console.log("Unexpected error: " + url);
+					on_error();
+				}
+            }
+          }
+        };
+        xhr.onerror = function (e) {
+            //console.log(xhr);
+            xhr.abort();
+            if (error_count < MAX_REQUEST_ATTEMPT && repeat_request)
+                setTimeout(function() {
+                    Network.DoRequestAsync(url, params, task, error_count + 1)
+                }, 1000);
+            else {
+                console.log("Network error: " + url);
+                on_error();
+            }
+        };
+        xhr.ontimeout =  function (e) {
+            xhr.abort();
+            if (error_count < MAX_REQUEST_ATTEMPT && repeat_request)
+                setTimeout(function() {
+                    Network.DoRequestAsync(url, params, task, error_count + 1)
+                }, 1000);
+            else {
+                console.log("Network timeout: " + url);
+                on_error();
+            }
+        };
+        
+        if (debug == true) {
+            xhr.onreadystatechange = function() {
+              if(this.readyState == this.HEADERS_RECEIVED) {
+                    // Get the raw header string
+                    var headers = xhr.getAllResponseHeaders();
+                    console.log(headers)
+                }
+            }
+        }
+        
+        if (form_data) {
+            xhr.withCredentials = true;
+            xhr.send(form_data);
+        }
+        else xhr.send(post_data);
+        return xhr;
+    }
+    
+    static DoGetAsync(url, task, is_render = false, method = "GET"){
+        var params = {
+            "method" : method,
+            "timeout" : 20000,
+        }
+        return Network.DoRequestAsync(url, params, task)
+    }
+    
+    static DoPostAsync(url, data, task, is_render = false){
+        var params = {
+            "method" : "POST",
+            "post_data" : data,
+            "timeout" : 20000,
+        }
+        return Network.DoRequestAsync(url, params, task)
+    }
+}
 
 //Прогрессор
 class Progresser{
