@@ -1,7 +1,7 @@
 //A set of methods, that might be extremely useful, but should be used with attention and care.
 
 
-///TODO: Add headers
+///TODO: Add headers, connect values to Network class
 
 var MAX_REQUEST_ATTEMPT = 10;
 var TIMEOUT = 10000;
@@ -46,7 +46,7 @@ class Network {
         var timeout = (typeof params.timeout != 'undefined') ? params.timeout : TIMEOUT;
         var show_errors = (typeof params.show_errors != 'undefined') ? params.show_errors : true;
         var cache_request = (typeof params.cache_request != 'undefined') ? params.cache_request : false;
-        var include_headers = (typeof params.include_headers != 'undefined') ? params.include_headers : true;
+        var headers = (typeof params.headers != 'undefined') ? params.headers : {};
         var on_error = (typeof params.on_error != 'undefined') ? params.on_error : ()=>{};
 		var verbosity = (typeof params.verbosity != 'undefined') ? params.verbosity : true;
         
@@ -63,8 +63,8 @@ class Network {
             }        
         }
         
-        if (include_headers){
-            //xhr.setRequestHeader(header_name, header_value);
+        for (let header in headers) {
+            xhr.setRequestHeader(header, headers[header]);
         }
         
         let start = Date.now();
@@ -350,6 +350,8 @@ function uuidv4() {
     return v.toString(16);
   });
 }
+
+///TODO: Make it to the class
 
 /// HTML CONTAINER ///
 function CreateContainer(id, css_data, html_data){
