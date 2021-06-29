@@ -128,8 +128,8 @@ class Network {
             }
         }
         
-        xhr.withCredentials = true;
         if (form_data) {
+            xhr.withCredentials = true;
             xhr.send(form_data);
         }
         else xhr.send(post_data);
